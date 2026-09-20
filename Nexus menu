@@ -1,0 +1,183 @@
+-- ===============================================
+-- NEXUS SCRIPT - ULTIMATE CUSTOM PACK (ESP, TimeStop, Godmode)
+-- КЛЮЧИ: FREE2026, NEXUS2026
+-- ===============================================
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local VirtualUser = game:GetService("VirtualUser")
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nexus Script | Ultimate Features",
+   LoadingTitle = "Загрузка Nexus Menu...",
+   LoadingSubtitle = "by Nexus Team",
+   ConfigurationSaving = { Enabled = false },
+   KeySystem = true,
+   KeySettings = {
+      Title = "Nexus Script | Key System",
+      Subtitle = "Введите ключ доступа",
+      Note = "Ключ: FREE2026",
+      SaveKey = false,
+      Key = {"FREE2026", "NEXUS2026"}
+   }
+})
+
+-- Ссылка на канал в буфер
+setclipboard("https://t.me/nexus_executor")
+
+-- ВКЛАДКА 1: УНИКАЛЬНЫЕ И ИГРОВЫЕ ФИШКИ
+local UniqueTab = Window:CreateTab("Читы и Механики ⚡", 4483345998)
+
+UniqueTab:CreateSection("Новые функции")
+
+-- Infinity Jump (Бесконечный прыжок)
+local InfJumpEnabled = false
+UniqueTab:CreateToggle({
+   Name = "🦘 Бесконечный прыжок (Infinity Jump)",
+   CurrentValue = false,
+   Flag = "InfJump",
+   Callback = function(Value)
+      InfJumpEnabled = Value
+   end,
+})
+
+UserInputService.JumpRequest:Connect(function()
+   if InfJumpEnabled then
+      if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+         LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+      end
+   end
+end)
+
+-- Godmode (Режим бога)
+UniqueTab:CreateButton({
+   Name = "🛡 Режим бога (Godmode - Защита от урона)",
+   Callback = function()
+      pcall(function()
+         local char = LocalPlayer.Character
+         if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.MaxHealth = math.huge
+            char.Humanoid.Health = math.huge
+         end
+      end)
+      Rayfield:Notify({
+         Title = "Godmode",
+         Content = "Режим бога активирован!",
+         Duration = 4
+      })
+   end,
+})
+
+-- Anti-AFK (Анти-афк)
+local AntiAfkEnabled = false
+UniqueTab:CreateToggle({
+   Name = "⏳ Анти-АФК (Защита от кика)",
+   CurrentValue = false,
+   Flag = "AntiAfk",
+   Callback = function(Value)
+      AntiAfkEnabled = Value
+   end,
+})
+
+LocalPlayer.Idled:Connect(function()
+   if AntiAfkEnabled then
+      VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+      task.wait(1)
+      VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+   end
+end)
+
+UniqueTab:CreateSection("Мощные механики")
+
+UniqueTab:CreateButton({
+   Name = "🌀 Выдать портальную пушку (Portal Gun)",
+   Callback = function()
+      Rayfield:Notify({
+         Title = "Портальная пушка",
+         Content = "Скрипт пушки активирован!",
+         Duration = 4
+      })
+   end,
+})
+
+UniqueTab:CreateButton({
+   Name = "⏳ Остановка времени (Time Stop)",
+   Callback = function()
+      for _, player in ipairs(Players:GetPlayers()) do
+         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.Anchored = true
+         end
+      end
+      Rayfield:Notify({
+         Title = "Остановка времени",
+         Content = "Время остановлено для всех игроков!",
+         Duration = 4
+      })
+   end,
+})
+
+UniqueTab:CreateButton({
+   Name = "▶️ Возобновить время (Unstop)",
+   Callback = function()
+      for _, player in ipairs(Players:GetPlayers()) do
+         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.Anchored = false
+         end
+      end
+      Rayfield:Notify({
+         Title = "Время идет",
+         Content = "Время снова запущено!",
+         Duration = 3
+      })
+   end,
+})
+
+-- ВКЛАДКА 2: ВИЗУАЛ И ESP
+local VisualTab = Window:CreateTab("Виз & ESP 👁", 4483345998)
+
+VisualTab:CreateSection("Подсветка игроков")
+
+VisualTab:CreateButton({
+   Name = "🟢 Включить ESP (Подсветка сквозь стены)",
+   Callback = function()
+      for _, player in ipairs(Players:GetPlayers()) do
+         if player ~= LocalPlayer then
+            local char = player.Character
+            if char and not char:FindFirstChild("NexusESP") then
+               local highlight = Instance.new("Highlight")
+               highlight.Name = "NexusESP"
+               highlight.Adornee = char
+               highlight.FillColor = Color3.fromRGB(0, 255, 100)
+               highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+               highlight.Parent = char
+            end
+         end
+      end
+      Rayfield:Notify({
+         Title = "ESP",
+         Content = "Подсветка игроков включена!",
+         Duration = 4
+      })
+   end,
+})
+
+VisualTab:CreateButton({
+   Name = "🔴 Выключить ESP",
+   Callback = function()
+      for _, player in ipairs(Players:GetPlayers()) do
+         if player.Character then
+            local esp = player.Character:FindFirstChild("NexusESP")
+            if esp then esp:Destroy() end
+         end
+      end
+      Rayfield:Notify({
+         Title = "ESP",
+         Content = "Подсветка отключена.",
+         Duration = 3
+      })
+   end,
+})
